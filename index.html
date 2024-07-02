@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方向抽取示例</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .draw-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .next-btn {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        /* 其他样式保持不变 */
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>点击按钮抽取风向</h2>
+        <button class="draw-btn">抽取</button>
+        <button class="reset-btn">重新开始</button>
+        <button class="next-btn">下一步</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const directions = ["东", "南", "西", "北"];
+        let availableDirections = [...directions];
+
+        document.querySelector('.draw-btn').addEventListener('click', function () {
+            if (availableDirections.length > 0) {
+                const index = Math.floor(Math.random() * availableDirections.length);
+                const direction = availableDirections.splice(index, 1)[0];
+                document.getElementById('result').innerText = `抽取结果：${direction}`;
+            } else {
+                document.getElementById('result').innerText = '所有方向都已抽取完毕！';
+            }
+        });
+
+        document.querySelector('.reset-btn').addEventListener('click', function () {
+            availableDirections = [...directions];
+            document.getElementById('result').innerText = '';
+        });
+
+        document.querySelector('.next-btn').addEventListener('click', function () {
+            alert('执行下一步操作');
+            // 在这里定义下一步的具体行为
+        });
+    </script>
+</body>
+
+</html>
