@@ -4,13 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>方向抽取示例</title>
+    <title>Easy Riichi!</title>
     <style>
+        /* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+        }
+
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-top: 20px;
+            text-align: center;
+        }
+
+        .button-group {
+            margin: 10px 0;
+            /* 添加一些上下边距 */
+        }
+
+        .button-group:nth-child(3) {
+            /* 选择第二组按钮 */
+            display: flex;
+            justify-content: center;
+            /* 使按钮在容器中居中 */
+            gap: 10px;
+            /* 在按钮之间添加一些间隙 */
         }
 
         button {
@@ -36,46 +58,94 @@
             color: white;
         }
 
-        /* 其他样式保持不变 */
         #result {
             margin-top: 20px;
             font-size: 20px;
             color: #333;
+        }
+
+        /* 跟随系统深色模式 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: black;
+                color: white;
+            }
+
+            .draw-btn {
+                background-color: #00FF00;
+            }
+
+            .reset-btn {
+                background-color: #FF0000;
+            }
+
+            .next-btn {
+                background-color: #0000FF;
+            }
+
+            #result {
+                color: #CCC;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>点击按钮抽取风向</h2>
-        <button class="draw-btn">抽取</button>
-        <button class="reset-btn">重新开始</button>
-        <button class="next-btn">下一步</button>
+        <h1>定座次</h1>
+        <img id="tile" src="img/8z.png" alt="方向">
         <div id="result"></div>
+        <button class="draw-btn">抽取</button>
+        <button class="reset-btn">重置</button>
+        <button class="next-btn">下一步</button>
     </div>
 
     <script>
-        const directions = ["东", "南", "西", "北"];
+        const directions = ["東", "南", "西", "北"];
         let availableDirections = [...directions];
+        const directionImg = document.getElementById('tile');
+        const directionMap = {
+            "東": "img/1z.png",
+            "南": "img/2z.png",
+            "西": "img/3z.png",
+            "北": "img/4z.png"
+        };
 
-        document.querySelector('.draw-btn').addEventListener('click', function () {
-            if (availableDirections.length > 0) {
-                const index = Math.floor(Math.random() * availableDirections.length);
-                const direction = availableDirections.splice(index, 1)[0];
-                document.getElementById('result').innerText = `抽取结果：${direction}`;
-            } else {
-                document.getElementById('result').innerText = '所有方向都已抽取完毕！';
-            }
-        });
+        function displayResult(direction) {
+            document.getElementById('result').innerText = `抽取结果：${direction}`;
+            document.querySelector('.container').appendChild(document.getElementById('result'));
+            directionImg.src = directionMap[direction]; // 更新图片
+        }
+
+        function drawAnimation() {
+            let animationInterval = setInterval(function () {
+                let randomTileNumber = Math.floor(Math.random() * 4) + 1;
+                directionImg.src = `img/${randomTileNumber}z.png`;
+            }, 100);
+
+            setTimeout(function () {
+                clearInterval(animationInterval);
+                if (availableDirections.length > 0) {
+                    const index = Math.floor(Math.random() * availableDirections.length);
+                    const direction = availableDirections.splice(index, 1)[0];
+                    displayResult(direction);
+                } else {
+                    document.getElementById('result').innerText = '所有方向都已抽取完毕！';
+                    directionImg.src = 'img/8z.png';
+                }
+            }, 1000); // 1秒后停止动画并显示结果
+        }
+
+        document.querySelector('.draw-btn').addEventListener('click', drawAnimation);
 
         document.querySelector('.reset-btn').addEventListener('click', function () {
             availableDirections = [...directions];
             document.getElementById('result').innerText = '';
+            directionImg.src = 'img/8z.png';
         });
 
         document.querySelector('.next-btn').addEventListener('click', function () {
-            alert('执行下一步操作');
-            // 在这里定义下一步的具体行为
+            window.location.href = 'dice.html';
         });
     </script>
 </body>

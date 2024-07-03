@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<style>
+    body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        background-color: white;
+        color: black;
+    }
+
+    /* 深色模式样式 */
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #121212;
+            color: white;
+        }
+
+        /* 根据需要调整其他元素的深色模式样式 */
+    }
+
+    /* 浅色模式样式（如果有特定的需求） */
+    @media (prefers-color-scheme: light) {
+        body {
+            background-color: white;
+            color: black;
+        }
+
+        /* 根据需要调整其他元素的浅色模式样式 */
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    img {
+        margin-top: 20px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    p {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>骰子游戏</title>
+    <script>
+        let throwCount = 0; // 定义一个变量来跟踪扔骰子的次数
+        function rollDiceAnimation() {
+            const dice1 = document.getElementById('dice1');
+            const dice2 = document.getElementById('dice2');
+            const interval = 100; // 动画间隔时间（毫秒）
+            const duration = 1000; // 动画持续时间（毫秒）
+
+            let startTime = new Date().getTime(); // 动画开始时间
+
+            let animationInterval = setInterval(function () {
+                // 动画效果：随机更换骰子图片
+                dice1.src = `img/dice${Math.floor(Math.random() * 6) + 1}.svg`;
+                dice2.src = `img/dice${Math.floor(Math.random() * 6) + 1}.svg`;
+
+                if (new Date().getTime() - startTime > duration) {
+                    clearInterval(animationInterval); // 停止动画
+                    rollDice(); // 显示最终结果
+                }
+            }, interval);
+        }
+        function rollDice() {
+            throwCount++;
+            let titleText = '';
+            switch (throwCount) {
+                case 1:
+                    titleText = '定假庄家';
+                    break;
+                case 2:
+                    titleText = '定庄家';
+                    break;
+                case 3:
+                    titleText = '定开山家';
+                    throwCount = 0; // 重置计数，以便重新开始
+                    break;
+                default:
+                    titleText = '错误'; // 这种情况理论上不应该发生
+                    break;
+            }
+            document.title = titleText; // 更新浏览器标签的标题
+            document.getElementById('pageTitle').innerText = titleText; // 更新页面中的标题
+
+            // 生成两个随机数来模拟扔两个骰子
+            let dice1Value = Math.floor(Math.random() * 6) + 1;
+            let dice2Value = Math.floor(Math.random() * 6) + 1;
+
+            // 更新骰子图片
+            document.getElementById('dice1').src = `img/dice${dice1Value}.svg`;
+            document.getElementById('dice2').src = `img/dice${dice2Value}.svg`;
+
+            // 更新结果
+            document.getElementById('result').innerText = `结果： ${dice1Value + dice2Value}`;
+            // 计算骰子的总和
+            let sum = dice1Value + dice2Value;
+            let arrowDirection = ""; // 用于存储箭头方向的 emoji
+
+            // 根据骰子的总和决定箭头的方向
+            switch (sum) {
+                case 2:
+                case 6:
+                case 10:
+                    arrowDirection = "👉"; // 右
+                    break;
+                case 3:
+                case 7:
+                case 11:
+                    arrowDirection = "👆"; // 上
+                    break;
+                case 4:
+                case 8:
+                case 12:
+                    arrowDirection = "👈"; // 左
+                    break;
+                case 5:
+                case 9:
+                    arrowDirection = "👇"; // 下
+                    break;
+                default:
+                    arrowDirection = ""; // 如果不是上述的数字，则不显示箭头
+                    break;
+            }
+
+            // 在页面上显示箭头方向
+            document.getElementById('arrowDirection').innerText = `箭头方向：${arrowDirection}`;
+        }
+    </script>
+    <script>
+        function reset() {
+            throwCount = 0;
+            document.title = '骰子游戏';
+            document.getElementById('pageTitle').innerText = '骰子游戏';
+            document.getElementById('dice1').src = 'img/dice6.svg';
+            document.getElementById('dice2').src = 'img/dice6.svg';
+            document.getElementById('result').innerText = '';
+            document.getElementById('arrowDirection').innerText = '';
+        }
+    </script>
+</head>
+
+<body>
+    <h1 id="pageTitle">骰子游戏</h1>
+    <img id="dice1" src="img/dice6.svg" alt="Dice 1" width="100" height="100">
+    <img id="dice2" src="img/dice6.svg" alt="Dice 2" width="100" height="100">
+    <br>
+    <button onclick="window.location.href='index.html'">上一步</button>
+    <button onclick="rollDiceAnimation()">扔骰子</button>
+    <button onclick="reset()">重置</button>
+    <p id="result"></p>
+    <p id="arrowDirection"></p>
+</body>
+
+</html>
